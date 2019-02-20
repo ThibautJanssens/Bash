@@ -9,7 +9,7 @@
 
 ### Taking the parameters when calling the script
 `./hello.sh World`  
-```
+``` bash
     printf "Hello, %s\n" "$1"
 ```
 
@@ -81,3 +81,60 @@
         i=$(expr $i +i)
     done
 ```  
+``` bash  
+    while [ $i -lt 5 ] do
+        echo "i is currently $i"
+        i=$[$i+1] #Note the lack of spaces around the brackets. This makes it a not a test expression
+    done
+```   
+*Loop can be made C-Style*
+``` bash  
+    for (( i = 0; i < 10; i++ )) do
+        echo "The iteration number is $i"
+    done
+
+    for (( i = 0, j = 0; i < 10; i++, j = i * i )) do
+        echo "The square of $i is equal to $j"
+    done  
+```  
+##### until *(until condition is true)*  
+``` bash  
+    i=5
+    until [[ i -eq 10 ]]; do #Checks if i=10
+        echo "i=$i" #Print the value of i
+        i=$((i+1)) #Increment i by 1
+    done
+```  
+### Switch case  
+``` bash  
+    case expression in
+        pattern1 )
+            statements ;;
+        pattern2 )
+            statements ;; # ;; == break; of other language
+    esac
+``` 
+*ex:*  
+``` bash  
+    for filename in $(ls) do
+	# Take extension available in a filename
+        ext=${filename##*\.}
+        case "$ext" in
+            c) 
+                echo "$filename : C source file"
+                ;;
+            o) 
+                echo "$filename : Object file"
+                ;;
+            sh) 
+                echo "$filename : Shell script"
+                ;;
+            txt) 
+                echo "$filename : Text file"
+                ;;
+            *) 
+                echo " $filename : Not processed"
+                ;;
+        esac
+    done  
+``` 
