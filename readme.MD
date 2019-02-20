@@ -138,3 +138,183 @@
         esac
     done  
 ``` 
+### Array  
+``` bash  
+    array=(1 2 3 4)
+    arr=('first' 'second' 'third')
+    arr1=([3]='fourth element' [4]='fifth element')
+    arr2[0]='first element'
+    declare -A arr3
+    arr3[first]='First element'
+    arr3[second]='Second element'
+    arr4=("$@") #assignment from script's input arguments
+
+    #access element
+    echo "${array[0]}"
+    echo "${array[-1]}" #print last element using subscript syntax
+    echo "${array[@]}" #print all element quoted separately
+    echo "${array[*]}" #print all element as a single quoted string
+    echo "${array[@]:1}" #print all elements from index 1 each quoted separately
+    echo "${array[@]:1:3}" #print 3 elements from index 1, each quote separately
+    
+    array=("${array[@]}" "fourth element" "fifth element") #replace the entire array with new parameter list
+
+    array=("new element" "${array[@]}") #add element at the beginning
+```  
+** * Insert * **  
+``` bash
+    arr=(a b c d)
+    # insert an element at index 2
+    i=2
+    arr=("${arr[@]:0:$i}" 'new' "${arr[@]:$i}")
+```  
+** * Delete * **  
+``` bash  
+    arr=(a b c)
+    echo "${arr[@]}" # outputs: a b c
+    echo "${!arr[@]}" # outputs: 0 1 2
+    unset -v 'arr[1]' 
+    echo "${arr[@]}" # outputs: a c
+    echo "${!arr[@]}" # outputs: 0 2
+```  
+** * Merge * **  
+``` bash
+    array3=("${array1[@]}" "${array2[@]}")
+```  
+### Array Iteration
+``` bash
+    a=(1 2 3 4)
+    # foreach loop
+    for y in "${a[@]}"; do    
+        echo "$y" # act on $y
+    done
+    # classic for-loop
+    for ((idx=0; idx < ${#a[@]}; ++idx)); do 
+        echo "${a[$idx]}" # act on ${a[$idx]}
+    done
+```  
+### Array Length  
+``` bash  
+    array=('first element' 'second element' 'third element')
+    echo "${#array[@]}" # gives out a length of 3
+```  
+### Array (map style)  
+``` bash
+    declare -A aa
+    aa=([hello]=world [ab]=cd ["key with space"]="hello world")
+    # same as 
+    # aa[hello]=world
+    # aa[ab]=cd
+    # aa["key with space"]="hello world"
+
+    echo "${aa[@]}" #Output: world cd hello world
+    
+    for key in "${!aa[@]}"; do
+        echo "Key: ${key}"
+        echo "Value: ${array[$key]}"
+    done
+    # Output
+    # Key: hello
+    # Value: world
+    # Key: ab
+    # Value: cd
+    # Key: key with space
+    # Value: hello world
+
+    echo "${#aa[@]}" # Out: 3
+```  
+### Array Loop  
+``` bash  
+    for i in "${arr[@]}"; do
+        echo "$i"
+    done
+
+    #c-style for
+    for ((i=0;i<${#arr[@]};i++)); do
+        echo "${arr[$i]}"
+    done
+
+    #while
+    i=0
+    while [ $i -lt ${#arr[@]} ]; do # or while (( $i < ${#arr[@]} )); do
+        echo "${arr[$i]}"
+        i=$((i + 1)) # or ((i++))
+    done
+
+    #until
+    i=0
+    until [ $i -ge ${#arr[@]} ]; do
+        echo "${arr[$i]}"
+        i=$((i + 1))
+    done
+```  
+** * Destroy array * **  
+``` bash
+    unset array
+```  
+** * Delete single array element * **  
+``` bash  
+    unset array[10]
+```  
+### Function
+``` bash  
+    #with return
+    function positive() {
+        return 0
+    }
+    function negative() {
+        return 1
+    }
+    greet() {
+        local name="$1"
+        echo "Hello, $name"
+    }
+    greet "John Doe" #calling function with parameters
+```  
+*You can export function so it can be exposed to child processes*  
+`export -f greet` *to be used:* `bash -c 'greet'`  
+### Find
+##### Searching file/directory by name or extension  
+```  bash  
+#To find files/directories with a specific name, relative to pwd :
+$ find . -name "myFile.txt"
+#output: ./myFile.txt
+#To find files/directories with a specific extension, use a wildcard:
+$ find . -name "*.txt"
+#output: ./myFile.txt
+#output: ./myFile2.txt
+#To find files/directories matching one of many extensions, use the or flag:
+$ find . -name "*.txt" -o -name "*.sh"
+#To find files/directories which name begin with abc and end with one alpha character following a one digit:
+$ find . -name "abc[a-z][0-9]"
+#To find all files/directories located in a specific directory
+$ find /opt
+#To search for files only (not directories), use -type f :
+find /opt -type f
+#To search for directories only (not regular files), use -type d :
+find /opt -type d
+```  
+##### Filter the path  
+``` bash  
+#To find only files containing log anywhere in their path (folder or name):
+find . -type f -path '*log*'
+#To find only files within a folder called log (on any level):
+find . -type f -path '*/log/*'
+#To find only files within a folder called log or data :
+find . -type f -path '*/log/*' -o -path '*/data/*'
+#To find all files except the ones contained in a folder called bin :
+find . -type f -not -path '*/bin/*'
+#To find all file all files except the ones contained in a folder called bin or log files:
+find . -type f -not -path '*log' -not -path '*/bin/*'
+```  
+##### Filter by type  
+``` bash 
+#To find files, use the -type f flag
+$ find . -type f
+#To find directories, use the -type d flag
+$ find . -type d
+#To find block devices, use the -type b flag
+$ find /dev -type b
+#To find symlinks, use the -type l flag
+$ find . -type l
+```  
