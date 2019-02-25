@@ -161,14 +161,14 @@
 
     array=("new element" "${array[@]}") #add element at the beginning
 ```  
-** * Insert * **  
+** *Insert* **  
 ``` bash
     arr=(a b c d)
     # insert an element at index 2
     i=2
     arr=("${arr[@]:0:$i}" 'new' "${arr[@]:$i}")
 ```  
-** * Delete * **  
+** *Delete* **  
 ``` bash  
     arr=(a b c)
     echo "${arr[@]}" # outputs: a b c
@@ -177,7 +177,7 @@
     echo "${arr[@]}" # outputs: a c
     echo "${!arr[@]}" # outputs: 0 2
 ```  
-** * Merge * **  
+** *Merge* **  
 ``` bash
     array3=("${array1[@]}" "${array2[@]}")
 ```  
@@ -248,11 +248,11 @@
         i=$((i + 1))
     done
 ```  
-** * Destroy array * **  
+** *Destroy array* **  
 ``` bash
     unset array
 ```  
-** * Delete single array element * **  
+** *Delete single array element* **  
 ``` bash  
     unset array[10]
 ```  
